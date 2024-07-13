@@ -1,18 +1,15 @@
-import React from "react";
-import bgImg from "@/assets/Images/bg2.png";
-import { Product } from "@/type/Types";
-import homeImg from "@/assets/Images/handBag_home.png";
 import bg_school_bg from "@/assets/Images/bg_school_bag.jpg";
 import {
-  Linkedin,
-  Instagram,
-  Twitter,
-  Github,
   Car,
   Headphones,
   IndianRupee,
 } from "lucide-react";
 import ProductCard from "@/components/ProductCard";
+import { supabase } from "@/services/SupabaseClient";
+import HeroSection from "@/components/HeroSection";
+import { useEffect } from "react";
+import { useProduct } from "@/customHooks/useProduct";
+import { Product } from "@/type/Types";
 
 const LargeProductCard = () => {
   return (
@@ -47,9 +44,9 @@ const LargeProductCard = () => {
               stroke="currentColor"
             >
               <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
                 d="M12 6v6m0 0v6m0-6h6m-6 0H6"
               />
             </svg>
@@ -61,140 +58,19 @@ const LargeProductCard = () => {
 };
 
 export default function Home() {
-  const heroProduct: Product = {
-    id: 1,
-    product_name: "Blush Rose Handbag",
-    title: "Elegant Light Pink Handbag",
-    Description:
-      "Elevate your style with our Elegant Light Pink Handbag. This chic accessory combines sophistication with practicality, making it the perfect addition to any wardrobe. Crafted from high-quality materials.",
-    Price: 49.99,
-    Img_url: homeImg,
-    Cat_id: 2,
-    Info: [
-      {
-        key: "Material",
-        value: "FauxLeather",
-      },
-      {
-        key: "Dimensions",
-        value: "Medium",
-      },
-      {
-        key: "Features",
-        value: "Adjustable",
-      },
-    ],
-  };
-
+  const productData:Array<Product>=useProduct('Hand Bag')
+ 
   return (
     <>
-      <section
-        className="flex justify-center items-center lg:h-[100vh] min-h-fit bg-no-repeat font-Montserrat overflow-x-hidden"
-        style={{
-          backgroundImage: `url(${bgImg})`,
-          backgroundSize: "contain",
-          backgroundPosition: "center",
-        }}
-      >
-        <div className="flex lg:justify-between justify-center w-[100%] lg:w-[1300px] flex-wrap ">
-          <div>
-            <div className="flex flex-col lg:gap-2 gap-6 lg:py-0 mt-5 lg:justify-between justify-center items-center lg:items-start h-[350px]">
-              <div className="flex flex-col justify-center items-center lg:justify-start lg:items-start gap-1 ">
-                <span className="text-[2rem] font-semibold">
-                  {heroProduct.product_name}
-                </span>
-                <span className="text-[1.8rem] text-slate-400 font-DancingScript">
-                  {heroProduct.title}
-                </span>
-              </div>
-              <div className="flex flex-col gap-2 justify-center items-center md:justify-start md:items-start">
-                <div className="text-[1.2rem] font-medium">Information:</div>
-                <div className="flex gap-2 flex-wrap justify-center items-center md:justify-start md:items-start ">
-                  {heroProduct.Info?.map((ele, index) => (
-                    <div
-                      key={index}
-                      className=" border-2 border-custom_shade3 flex flex-col gap-1 px-2 py-1 rounded-[10px] justify-center items-center md:justify-start md:items-start"
-                    >
-                      <span className="md:text-[1.2rem] text-[1rem] font-montserrat font-semibold text-custom_shade4">
-                        {ele.value ?? "info"}
-                      </span>
-                      <span className="text-custom_shade3 font-Montserrat">
-                        {ele.key ?? "info"}
-                      </span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-              <div className="flex flex-wrap gap-2 w-full md:justify-between justify-center">
-                <div className="text-[1.3rem] text-slate-500">
-                  ${heroProduct.Price}
-                </div>
-                <div>
-                  <button className="bg-custom_shade4 py-2 px-4 text-white font-semibold rounded-[5px]">
-                    ADD TO CART
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div className="relative lg:top-[70px] lg:right-[40px]">
-            <img src={heroProduct.Img_url} alt="" />
-          </div>
-          <div className="flex flex-col md:gap-2 h-[350px] lg:mt-5 lg:justify-between items-center justify-center lg:items-start gap-4  ">
-            <div className="flex flex-col">
-              <span className="font-semibold lg:text-left text-center pb-2">
-                Description:{" "}
-              </span>
-              <span className="lg:w-[300px] md:w-[400px] px-3 md:px-0 lg:text-left text-center ">
-                {heroProduct.Description}
-              </span>
-            </div>
-            <div className="flex gap-2 flex-col justify-center items-center  lg:items-start">
-              <div className="font-semibold ">Contact us</div>
-              <div className="flex gap-2">
-                <a
-                  href="https://www.linkedin.com/in/manishgupta31"
-                  target="blank"
-                  className="bg-black px-2 py-2 rounded-[50%] hover:bg-custom_shade3"
-                >
-                  <Linkedin className="text-white" />
-                </a>
-                <a
-                  href="https://www.instagram.com/manish_gupta31/"
-                  target="blank"
-                  className="bg-black px-2 py-2 rounded-[50%] hover:bg-custom_shade3"
-                >
-                  <Instagram className="text-white" />
-                </a>
-                <a
-                  href="https://twitter.com/Manish_Gupta31"
-                  target="blank"
-                  className="bg-black px-2 py-2 rounded-[50%] hover:bg-custom_shade3"
-                >
-                  <Twitter className="text-white" />
-                </a>
-                <a
-                  href="https://github.com/MG-9205"
-                  target="blank"
-                  className="bg-black px-2 py-2 rounded-[50%] hover:bg-custom_shade3"
-                >
-                  <Github className="text-white" />
-                </a>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
+      <HeroSection/>
 
       <section
         id="Projects"
         className=" overflow-x-hidden  w-fit  py-8 mx-auto grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 justify-items-center gap-y-12 gap-x-8 mt-10 mb-5 px-6 md:px-7 overflow-y-hidden"
       >
-        <ProductCard />
-        <ProductCard />
-        <ProductCard />
-        <ProductCard />
-        <ProductCard />
+        {productData.map((ele: Product) => (
+          <ProductCard key={ele.id} {...ele} />
+        ))}
       </section>
 
       <section id="About" className="container mx-auto px-4 sm:px-6 py-12">
@@ -228,12 +104,12 @@ export default function Home() {
             <LargeProductCard />
           </div>
           <div className="block md:hidden">
-            <ProductCard />
+            <ProductCard {...productData[0]} />
           </div>
         </div>
       </section>
 
-      <section id="WhyUS" className="container mx-auto px-4 sm:px-6 py-12">
+      <section id="WhyUS" className="container mx-auto px-4 sm:px-6 py-12 ">
         <div className="relative">
           <div className="relative top-0 left-1/2 transform -translate- overflow-hiddenx-1/2 h-14 w-[0.7px] bg-custom_shade4"></div>
         </div>
@@ -244,7 +120,7 @@ export default function Home() {
           </p>
         </div>
 
-        <div className="flex flex-col md:flex-row gap-6 md:gap-0 justify-around items-center pt-10 font-Montserrat">
+        <div className="flex flex-col md:flex-row gap-6 md:gap-0 justify-around items-center pt-10 pb-8 font-Montserrat">
           <div className="flex flex-col gap-2 justify-center items-center">
             <div className="bg-custom_shade4 px-2 py-2 rounded-[50%] flex justify-center items-center ">
               <Car className="w-8 h-8 text-white" />

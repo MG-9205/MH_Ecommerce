@@ -1,14 +1,7 @@
-import React, { memo, useState } from "react";
+import { memo, useEffect, useState } from "react";
 import Logo from "@/assets/Images/MH_BAG_logo.png";
-import SchoolBag from "@/assets/Images/SchoolBag.jfif";
-import CarryBag from "@/assets/Images/CarryBag.jfif";
-import Cultch from "@/assets/Images/Cultch.jfif";
-import HandBag from "@/assets/Images/HandBag.jfif";
-import ShoppingBag from "@/assets/Images/ShoppingBag.jfif";
-import TravellingBag from "@/assets/Images/TravellingBag.jfif";
-import Sider from "@/assets/Images/sider.jfif";
-import Suitcase from "@/assets/Images/suitcase.jfif";
-import Wallet from "@/assets/Images/wallet.jfif";
+import { supabase } from "@/services/SupabaseClient";
+import { Category } from "@/type/Types";
 import "@/App.css";
 import {
   Heart,
@@ -105,50 +98,16 @@ const CategoryCard = ({
 
 export default function Header() {
   const [menu, setmenu] = useState<boolean>(false);
+  const [CategoryData,setCategory]=useState<Array<Category>>([])
 
-  type Category = {
-    img_url: string;
-    Category_name: string;
-  };
-
-  const categoryData: Array<Category> = [
-    {
-      img_url: SchoolBag,
-      Category_name: "School",
-    },
-    {
-      img_url: TravellingBag,
-      Category_name: "Travel",
-    },
-    {
-      img_url: ShoppingBag,
-      Category_name: "Shopping",
-    },
-    {
-      img_url: Cultch,
-      Category_name: "Cultch",
-    },
-    {
-      img_url: HandBag,
-      Category_name: "Hand Bags",
-    },
-    {
-      img_url: CarryBag,
-      Category_name: "Carry Bags",
-    },
-    {
-      img_url: Suitcase,
-      Category_name: "Suitcase",
-    },
-    {
-      img_url: Sider,
-      Category_name: "Sider",
-    },
-    {
-      img_url: Wallet,
-      Category_name: "Wallet",
-    },
-  ];
+  useEffect(()=>{
+      (
+        async function(){
+          const catData=await supabase.from('Category').select('*')
+          setCategory(catData.data ?? [])
+        }
+      )()
+  },[])
 
   return (
     <>
@@ -191,10 +150,10 @@ export default function Header() {
         </div>
         <div className="bg-custom_shade4 w-full overflow-x-auto flex justify-center items-center">
           <nav className="w-full overflow-x-auto flex justify-around gap-4 lg:gap-0 py-2 px-2 lg:px-0">
-            {categoryData.map((ele: Category, key: number) => (
+            {CategoryData.map((ele: Category, key: number) => (
               <CategoryCard
-                img_url={ele.img_url}
-                text={ele.Category_name}
+                img_url={ele.Img_url ?? ""}
+                text={ele.Cat_name}
                 key={key}
               />
             ))}

@@ -1,16 +1,31 @@
 import React from 'react'
+import { Product } from '@/type/Types'
 
-export default function ProductCard() {
+  const ProductCard: React.FC<Product> = (props)=>{
+
+    const {
+        id,
+        name,
+        description,
+        price,
+        imgUrl,
+        stock,
+        feature,
+        dimension,
+        material,
+        category_name,
+      } = props;
+      
   return (
     <>
     <div className="w-40 md:w-48 bg-white shadow-md rounded-xl duration-500 md:hover:scale-105 ">
         <a href="#">
-            <img src="https://images.unsplash.com/photo-1646753522408-077ef9839300?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwcm9maWxlLXBhZ2V8NjZ8fHxlbnwwfHx8fA%3D%3D&auto=format&fit=crop&w=500&q=60" alt="Product" className="h-48 w-48 object-cover rounded-t-xl" />
+            <img src={imgUrl ?? ""} alt="Product" className="h-48 w-48 object-contain rounded-t-xl" />
             <div className="px-4 py-3 w-40 md:w-44">
-                <span className="text-gray-400  uppercase text-xs">Brand</span>
-                <p className="text-lg font-bold text-black truncate block capitalize">Product Name</p>
+                <span className="text-gray-400  uppercase text-xs">{category_name}</span>
+                <p className="text-lg font-bold text-black truncate block capitalize">{name}</p>
                 <div className="flex items-center  justify-between px-2">
-                    <p className="text-md font-semibold text-black cursor-auto my-3">$149</p>
+                    <p className="text-md font-semibold text-black cursor-auto my-3">${price}</p>
                   
                     <div className="">
                         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" className="bi bi-bag-plus" viewBox="0 0 16 16">
@@ -26,3 +41,5 @@ export default function ProductCard() {
     </>
   )
 }
+
+export default ProductCard
