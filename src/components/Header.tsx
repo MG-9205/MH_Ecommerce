@@ -17,6 +17,9 @@ import {
 import Tippy from "@tippyjs/react";
 import "tippy.js/dist/tippy.css";
 import "tippy.js/themes/light.css";
+import { useAppDispatch } from "@/store/store";
+import { showFrame,hideFrame } from "@/store/feature/FrameSlice";
+import Cart from "@/pages/Cart";
 
 const Login_btn = () => {
   return (
@@ -100,6 +103,8 @@ export default function Header() {
   const [menu, setmenu] = useState<boolean>(false);
   const [CategoryData,setCategory]=useState<Array<Category>>([])
 
+  const FrameDispatch=useAppDispatch()
+
   useEffect(()=>{
       (
         async function(){
@@ -108,6 +113,11 @@ export default function Header() {
         }
       )()
   },[])
+
+  const handleCart=()=>{
+      FrameDispatch(showFrame())
+      
+  }
 
   return (
     <>
@@ -122,7 +132,7 @@ export default function Header() {
           <div className="hidden md:block">
             <Login_btn />
           </div>
-          <div className="flex gap-2 justify-center items-center cursor-pointer">
+          <div className="flex gap-2 justify-center items-center cursor-pointer"  onClick={handleCart}>
             <ShoppingCart />
             <p className="hidden md:inline">Cart</p>
           </div>
@@ -160,6 +170,7 @@ export default function Header() {
           </nav>
         </div>
       </header>
+      <Cart/>
     </>
   );
 }
