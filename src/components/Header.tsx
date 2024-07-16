@@ -18,7 +18,7 @@ import Tippy from "@tippyjs/react";
 import "tippy.js/dist/tippy.css";
 import "tippy.js/themes/light.css";
 import { useAppDispatch } from "@/store/store";
-import { showFrame,hideFrame } from "@/store/feature/FrameSlice";
+import { showFrame} from "@/store/feature/FrameSlice";
 import Cart from "@/pages/Cart";
 
 const Login_btn = () => {

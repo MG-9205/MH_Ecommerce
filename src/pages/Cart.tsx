@@ -127,7 +127,7 @@ function ProductItem({ product }: ProductItemProps) {
 
 export default function Cart() {
   return (
-
+    <Frame >
       <div className='overflow-hidden '>
         <div className="mt-2 overflow-y-auto  w-full">
           <div className="flow-root">
@@ -170,6 +170,6 @@ export default function Cart() {
           </div>
         </div>
       </div>
-
+    </Frame>
   );
 }

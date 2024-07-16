@@ -1,7 +1,12 @@
 import React from 'react'
 import { Product } from '@/type/Types'
+import { useAppDispatch } from '@/store/store';
+import { setProductState } from '@/store/feature/ProductSlice';
+import { useNavigate } from 'react-router-dom';
 
   const ProductCard: React.FC<Product> = (props)=>{
+    const dispatch=useAppDispatch()
+    const Navigate=useNavigate()
 
     const {
         id,
@@ -15,10 +20,18 @@ import { Product } from '@/type/Types'
         material,
         category_name,
       } = props;
+
+
+      const handleProductCard=(productDetail:Product)=>{
+      if(productDetail.id){
+        dispatch(setProductState(productDetail))
+        Navigate('/DetailPage')
+      }
+       }
       
   return (
     <>
-    <div className="w-40 md:w-48 bg-white shadow-md rounded-xl duration-500 md:hover:scale-105 ">
+    <div className="w-40 md:w-48 bg-white shadow-md rounded-xl duration-500 md:hover:scale-105 " onClick={()=>handleProductCard(props)}>
         <a href="#">
             <img src={imgUrl ?? ""} alt="Product" className="h-48 w-48 object-contain rounded-t-xl" />
             <div className="px-4 py-3 w-40 md:w-44">

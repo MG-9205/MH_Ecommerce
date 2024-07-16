@@ -5,9 +5,9 @@ import {
   IndianRupee,
 } from "lucide-react";
 import ProductCard from "@/components/ProductCard";
-import { supabase } from "@/services/SupabaseClient";
+
 import HeroSection from "@/components/HeroSection";
-import { useEffect } from "react";
+
 import { useProduct } from "@/customHooks/useProduct";
 import { Product } from "@/type/Types";
 

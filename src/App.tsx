@@ -4,9 +4,9 @@ import Home from '@/pages/Home'
 import Header from '@/components/Header'
 import { Outlet,createBrowserRouter,RouterProvider } from 'react-router-dom'
 import './App.css'
-import Cart from './pages/Cart'
 import {store} from '@/store/store'
 import { Provider } from 'react-redux'
+import DetailPage from '@/pages/DetailPage'
 
 const Main:React.FC=()=>{
   return(
@@ -27,6 +27,10 @@ function App() {
     children:[{
       path:'/',
       element:<Home/>
+    },
+    {
+      path:'/DetailPage',
+      element:<DetailPage/>
     }]
    }])
 
