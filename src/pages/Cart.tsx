@@ -1,5 +1,4 @@
 import {useState} from 'react';
-import Frame from '@/components/Frame';
 import { Plus, Minus } from 'lucide-react';
 
 interface Product {
@@ -39,7 +38,7 @@ const products: Product[] = [
       "Front of satchel with blue canvas body, black straps and handle, drawstring top, and front zipper pouch.",
   },
   {
-    id: 2,
+    id: 3,
     name: "Medium Stuff Satchel",
     href: "#",
     color: "Blue",
@@ -127,12 +126,12 @@ function ProductItem({ product }: ProductItemProps) {
 
 export default function Cart() {
   return (
-    <Frame >
+   
       <div className='overflow-hidden '>
         <div className="mt-2 overflow-y-auto  w-full">
           <div className="flow-root">
             <ul role="list" className="-my-6 divide-y divide-gray-200 pr-2">
-              {products.map((product) => (
+              {products.map((product,index) => (
                 <ProductItem key={product.id} product={product} />
               ))}
             </ul>
@@ -170,6 +169,6 @@ export default function Cart() {
           </div>
         </div>
       </div>
-    </Frame>
+
   );
 }

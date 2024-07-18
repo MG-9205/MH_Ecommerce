@@ -7,6 +7,8 @@ import './App.css'
 import {store} from '@/store/store'
 import { Provider } from 'react-redux'
 import DetailPage from '@/pages/DetailPage'
+import SignUp from './pages/SignUp'
+import Login from './pages/Login'
 
 const Main:React.FC=()=>{
   return(
@@ -32,7 +34,15 @@ function App() {
       path:'/DetailPage',
       element:<DetailPage/>
     }]
-   }])
+   },
+{
+  path:'/SignUp',
+  element:<SignUp/>
+},
+{
+  path:'/Login',
+  element:<Login/>
+}])
 
 
   return (

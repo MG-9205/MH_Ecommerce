@@ -17,11 +17,17 @@ import {
 import Tippy from "@tippyjs/react";
 import "tippy.js/dist/tippy.css";
 import "tippy.js/themes/light.css";
-import { useAppDispatch } from "@/store/store";
+import { useAppDispatch, useAppSelector } from "@/store/store";
 import { showFrame} from "@/store/feature/FrameSlice";
 import Cart from "@/pages/Cart";
+import { Link } from "react-router-dom";
+import Frame from "./Frame";
+import useUser from "@/customHooks/useUser";
 
 const Login_btn = () => {
+  const user=useAppSelector((state)=>state.user.value)
+
+
   return (
     <Tippy
       content={<LoginT />}
@@ -31,7 +37,7 @@ const Login_btn = () => {
     >
       <div className="flex gap-1 justify-center items-center bg-custom_shade4 text-white py-2 px-2 rounded-[10px] cursor-pointer group">
         <User />
-        <span className="font-semibold">Login</span>
+        <span className="font-semibold">{ user?.Name  ? user.Name : 'Login'}</span>
         <span className="transform transition-transform duration-300 group-hover:rotate-[-180deg] font-semibold">
           <ChevronDown />
         </span>
@@ -41,12 +47,18 @@ const Login_btn = () => {
 };
 
 const LoginT = () => {
+  const user=useAppSelector((state)=>state.user.value)
+ const {Logout}=useUser()
+  const handleLogout=()=>{
+          Logout()
+  }
+ 
   return (
     <div className="flex flex-col gap-2 cursor-pointer text-[1.2rem] md:text-[0.9rem]">
-      <div className="flex gap-2 text-[1.1rem] border-b-[1px] border-b-custom_shade3 pb-2">
+      {user?.Name ? <div onClick={handleLogout}>Logout</div>:<div className="flex gap-2 text-[1.1rem] border-b-[1px] border-b-custom_shade3 pb-2">
         <span>New Customer ? </span>
-        <span className="text-custom_shade4">SignUp</span>
-      </div>
+        <span className="text-custom_shade4"><Link to='/SignUp'>SignUp</Link></span>
+      </div>}
       <div className="flex gap-2 font-medium hover:text-custom_shade4 items-center">
         <User />
         My Profile
@@ -77,7 +89,7 @@ const SearchBar = memo(() => {
   );
 });
 
-const CategoryCard = ({
+const CategoryCard =memo( ({
   img_url,
   text,
 }: {
@@ -97,25 +109,33 @@ const CategoryCard = ({
       <div className="text-white font-medium">{text}</div>
     </div>
   );
-};
+});
 
 export default function Header() {
   const [menu, setmenu] = useState<boolean>(false);
   const [CategoryData,setCategory]=useState<Array<Category>>([])
+  const [Item,setItem]=useState(<Cart/>)
 
   const FrameDispatch=useAppDispatch()
+  const { SignUp } = useUser()
 
-  useEffect(()=>{
-      (
-        async function(){
-          const catData=await supabase.from('Category').select('*')
-          setCategory(catData.data ?? [])
-        }
-      )()
-  },[])
+  useEffect(() => {
+    (async function () {
+      const catData = await supabase.from('Category').select('*');
+      setCategory(catData.data ?? []);
+      const fetchData = async () => {
+        const user= await SignUp();
+        console.log(user)
+       };
+   
+       fetchData();
+    
+    })();
+  }, []);
 
-  const handleCart=()=>{
+  const handleCart=async()=>{
       FrameDispatch(showFrame())
+   
       
   }
 
@@ -170,7 +190,9 @@ export default function Header() {
           </nav>
         </div>
       </header>
-      <Cart/>
+     <Frame>
+      {Item}
+     </Frame>
     </>
   );
 }

@@ -22,3 +22,8 @@ export type Category = {
     Img_url: string | null;
   }
 
+export type User={
+    Name:string;
+    Password:string;
+    Email:string
+}
