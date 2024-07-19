@@ -9,6 +9,7 @@ import { Provider } from 'react-redux'
 import DetailPage from '@/pages/DetailPage'
 import SignUp from './pages/SignUp'
 import Login from './pages/Login'
+import CatProductPage, { CategoryProvider } from './pages/CatProductPage'
 
 const Main:React.FC=()=>{
   return(
@@ -33,6 +34,10 @@ function App() {
     {
       path:'/DetailPage',
       element:<DetailPage/>
+    },
+    {
+      path:'/CatProductPage',
+      element:<CatProductPage/>
     }]
    },
 {
@@ -47,10 +52,12 @@ function App() {
 
   return (
     <>
+    <CategoryProvider>
     <Provider store={store}>
     <RouterProvider router={Routes}>
     </RouterProvider>
     </Provider>
+    </CategoryProvider>
     </>
   )
 }

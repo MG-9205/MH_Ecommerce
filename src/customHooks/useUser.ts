@@ -104,7 +104,7 @@ const useUser = () => {
     };
 
     const Logout=()=>{
-      localStorage.clear
+      localStorage.clear()
       dispatch(setUserState({
         Name:"",
         Email:"",

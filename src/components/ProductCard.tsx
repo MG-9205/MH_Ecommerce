@@ -31,10 +31,10 @@ import { useNavigate } from 'react-router-dom';
       
   return (
     <>
-    <div className="w-40 md:w-48 bg-white shadow-md rounded-xl duration-500 md:hover:scale-105 " onClick={()=>handleProductCard(props)}>
+    <div className="w-40 md:w-52 bg-white shadow-md rounded-xl duration-500 md:hover:scale-105 " onClick={()=>handleProductCard(props)}>
         <a href="#">
             <img src={imgUrl ?? ""} alt="Product" className="h-48 w-48 object-contain rounded-t-xl" />
-            <div className="px-4 py-3 w-40 md:w-44">
+            <div className="px-4 py-3 w-40 md:w-48">
                 <span className="text-gray-400  uppercase text-xs">{category_name}</span>
                 <p className="text-lg font-bold text-black truncate block capitalize">{name}</p>
                 <div className="flex items-center  justify-between px-2">

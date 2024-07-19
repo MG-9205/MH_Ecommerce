@@ -1,4 +1,4 @@
-import { memo, useEffect, useState } from "react";
+import { memo, useContext, useEffect, useState } from "react";
 import Logo from "@/assets/Images/MH_BAG_logo.png";
 import { supabase } from "@/services/SupabaseClient";
 import { Category } from "@/type/Types";
@@ -20,9 +20,10 @@ import "tippy.js/themes/light.css";
 import { useAppDispatch, useAppSelector } from "@/store/store";
 import { showFrame} from "@/store/feature/FrameSlice";
 import Cart from "@/pages/Cart";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Frame from "./Frame";
 import useUser from "@/customHooks/useUser";
+import { CategoryContext } from "@/pages/CatProductPage";
 
 const Login_btn = () => {
   const user=useAppSelector((state)=>state.user.value)
@@ -97,8 +98,17 @@ const CategoryCard =memo( ({
   text: string;
   key?: number;
 }) => {
+  const Navigate=useNavigate()
+
+  const { setCategory}=useContext(CategoryContext)
+
+  const handleCategoryCard=(categoryType:string)=>{
+    setCategory(categoryType)
+    Navigate('CatProductPage')
+  }
   return (
-    <div className="flex flex-col justify-center items-center py-1 cursor-pointer">
+    
+    <div className="flex flex-col justify-center items-center py-1 cursor-pointer" onClick={()=>handleCategoryCard(text)}>
       <div className="min-h-[80px] min-w-[80px]">
         <img
           src={img_url}
@@ -108,6 +118,7 @@ const CategoryCard =memo( ({
       </div>
       <div className="text-white font-medium">{text}</div>
     </div>
+   
   );
 });
 
@@ -141,6 +152,7 @@ export default function Header() {
 
   return (
     <>
+    
       <header className="w-[100%] flex flex-col justify-center items-center overflow-hidden">
         <div className="md:max-w-[1200px] w-[100%] h-[70px] flex justify-around items-center py-2 overflow-hidden">
           <div>
@@ -193,6 +205,7 @@ export default function Header() {
      <Frame>
       {Item}
      </Frame>
+    
     </>
   );
 }

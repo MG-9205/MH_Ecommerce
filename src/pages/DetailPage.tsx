@@ -6,6 +6,7 @@ import { useAppSelector } from "@/store/store";
 export default function DetailPage() {
 const ProductState=useAppSelector((state)=>state.product.value)
 const productData: Array<Product> = useProduct(ProductState.category_name);
+const data=productData.slice(0,4)
 
   
 
@@ -289,9 +290,9 @@ const productData: Array<Product> = useProduct(ProductState.category_name);
 
       <section
         id="Projects"
-        className=" overflow-x-hidden  w-fit  py-8 mx-auto grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 justify-items-center gap-y-12 gap-x-8 mt-10 mb-5 px-6 md:px-7 overflow-y-hidden"
+        className=" overflow-x-hidden  w-fit  py-8 mx-auto grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 justify-items-center gap-y-12 gap-x-8 mt-10 mb-5 px-6 md:px-7 overflow-y-hidden"
       >
-        {productData.map((ele: Product) => (
+        {data.map((ele: Product) => (
           <ProductCard key={ele.id} {...ele} />
         ))}
       </section>
