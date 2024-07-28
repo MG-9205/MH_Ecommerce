@@ -27,3 +27,18 @@ export type User={
     Password:string;
     Email:string
 }
+
+export type CartItem = {
+  cart_id: string
+  created_at: string
+  id: string
+  product_id: string
+  quantity: number
+}
+
+export type UserCart = {
+  created_at: string
+  id: string
+  user_id: string 
+}
+

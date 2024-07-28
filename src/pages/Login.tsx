@@ -25,7 +25,6 @@ export default function Login() {
         return
        }else{
         setError('')
-        console.log(user)
         dispatch(setUserState({
           Name:user.name,
           Email:LoginData.Email,

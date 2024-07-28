@@ -24,6 +24,8 @@ import { Link, useNavigate } from "react-router-dom";
 import Frame from "./Frame";
 import useUser from "@/customHooks/useUser";
 import { CategoryContext } from "@/pages/CatProductPage";
+import { useQueryClient } from "react-query";
+import cartQueryKeys from "@/helper/Cart";
 
 const Login_btn = () => {
   const user=useAppSelector((state)=>state.user.value)
@@ -50,8 +52,12 @@ const Login_btn = () => {
 const LoginT = () => {
   const user=useAppSelector((state)=>state.user.value)
  const {Logout}=useUser()
+ const queryClient=useQueryClient()
   const handleLogout=()=>{
           Logout()
+          queryClient.invalidateQueries(cartQueryKeys.cart)
+          queryClient.invalidateQueries(cartQueryKeys.cartItems)
+
   }
  
   return (
@@ -126,6 +132,7 @@ export default function Header() {
   const [menu, setmenu] = useState<boolean>(false);
   const [CategoryData,setCategory]=useState<Array<Category>>([])
   const [Item,setItem]=useState(<Cart/>)
+  const user=useAppSelector(state=>state.user.value)
 
   const FrameDispatch=useAppDispatch()
   const { SignUp } = useUser()
@@ -136,7 +143,6 @@ export default function Header() {
       setCategory(catData.data ?? []);
       const fetchData = async () => {
         const user= await SignUp();
-        console.log(user)
        };
    
        fetchData();
@@ -145,7 +151,14 @@ export default function Header() {
   }, []);
 
   const handleCart=async()=>{
+
+    if(!user.id){
+      alert('You need to loging to use this feature')
+   return
+    }
       FrameDispatch(showFrame())
+
+
    
       
   }

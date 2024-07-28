@@ -2,7 +2,7 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { RootState } from "@/store/store";
 
 
-type User={
+export type User={
   Name:string;
   Email:string;
   id:string

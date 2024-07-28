@@ -90,6 +90,11 @@ const useUser = () => {
     
         if (data && data.length > 0) {
           setUser(data[0].name);
+          dispatch(setUserState({
+            Name:data[0].name,
+            Email:data[0].email,
+            id:data[0].id
+          }))
           return data[0]; // Return the user data if login is successful
         } else {
           console.log('No user found or incorrect password');
@@ -110,6 +115,8 @@ const useUser = () => {
         Email:"",
         id:""
       }))
+
+      window.location.reload();
       
     }
     

@@ -10,6 +10,14 @@ import DetailPage from '@/pages/DetailPage'
 import SignUp from './pages/SignUp'
 import Login from './pages/Login'
 import CatProductPage, { CategoryProvider } from './pages/CatProductPage'
+import {
+  QueryClient,
+  QueryClientProvider,
+} from 'react-query'
+import Checkout from './pages/Checkout'
+
+
+const queryClient = new QueryClient()
 
 const Main:React.FC=()=>{
   return(
@@ -47,18 +55,21 @@ function App() {
 {
   path:'/Login',
   element:<Login/>
+},{
+  path:'/Checkout',
+  element:<Checkout/>
 }])
 
 
   return (
     <>
+    <QueryClientProvider client={queryClient}>
     <CategoryProvider>
     <Provider store={store}>
-    <RouterProvider router={Routes}>
-    </RouterProvider>
+    <RouterProvider router={Routes}/>
     </Provider>
     </CategoryProvider>
-    </>
+    </QueryClientProvider></>
   )
 }
 
