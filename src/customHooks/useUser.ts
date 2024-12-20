@@ -95,16 +95,16 @@ const useUser = () => {
             Email:data[0].email,
             id:data[0].id
           }))
-          return data[0]; // Return the user data if login is successful
+          return data[0]; 
         } else {
           console.log('No user found or incorrect password');
-          setUser(' '); // Set user state to a default value
-          return null; // Return null or handle no user found case
+          setUser(' ');
+          return null; 
         }
       } catch (error) {
         console.error('Error:', error);
         setUser("no user");
-        return null; // Return null or handle any unexpected errors
+        return null; 
       }
     };
 

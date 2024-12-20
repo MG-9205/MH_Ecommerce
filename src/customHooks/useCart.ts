@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+
 import { CartItem, UserCart } from "@/type/Types";
 import CartService from "@/utility/Cart";
 import { useQuery } from "react-query";

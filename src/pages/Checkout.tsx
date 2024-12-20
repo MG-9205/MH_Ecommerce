@@ -1,4 +1,29 @@
-import React, { useState } from 'react';
+import useCart from '@/customHooks/useCart';
+import { useAppSelector } from '@/store/store';
+import { CartItem, Product } from '@/type/Types';
+import ProductService from '@/utility/Product';
+import React, { useEffect, useState } from 'react';
+
+interface CheckOutCardProps {
+  cartItem: CartItem;
+  product: Product;
+}
+
+const CheckOutCard = ({ cartItem, product }: CheckOutCardProps) => {
+if(!product){
+  return
+}
+  return (
+    <div className="flex flex-col rounded-lg bg-white sm:flex-row">
+      <img className="m-2 h-24 w-28 rounded-md object-cover object-center" src={product.imgUrl ?? ''} alt="" />
+      <div className="flex w-full flex-col px-4 py-4">
+        <span className="font-semibold">{product.name}</span>
+        <span className="float-right text-gray-400">qty : {cartItem.quantity}</span>
+        <p className="text-lg font-bold">${product.price}</p>
+      </div>
+    </div>
+  );
+};
 
 const Checkout: React.FC = () => {
   const [email, setEmail] = useState('');
@@ -10,6 +35,38 @@ const Checkout: React.FC = () => {
   const [billingState, setBillingState] = useState('');
   const [billingZip, setBillingZip] = useState('');
   const [shippingMethod, setShippingMethod] = useState('radio_1');
+  const [products, setProducts] = useState<{ [key: string]: Product }>({});
+  const user = useAppSelector(state => state.user.value);
+
+  const { cartItems } = useCart(user);
+
+  useEffect(() => {
+    const fetchProducts = async () => {
+      const fetchedProducts: { [key: string]: Product } = {};
+      for (const item of cartItems ?? []) {
+        const product = await ProductService.getProductById(item.product_id);
+        fetchedProducts[item.product_id] = product[0];
+      }
+      console.log(fetchedProducts)
+      setProducts(fetchedProducts);
+    };
+    if (cartItems?.length ?? 0 > 0) {
+      fetchProducts();
+    }
+  }, [cartItems]);
+
+  const calculateTotalPrice = () => {
+
+    if(!cartItems){
+      return 0
+    }
+    return cartItems?.reduce((total, item) => {
+      const product = products[item.product_id];
+      return total + (product ? (product.price?? 0) * item.quantity : 0);
+    }, 0);
+
+  
+  };
 
   const handlePlaceOrder = () => {
     // Add order placement logic here
@@ -53,23 +110,10 @@ const Checkout: React.FC = () => {
         <div className="px-4 pt-8">
           <p className="text-xl font-medium">Order Summary</p>
           <p className="text-gray-400">Check your items. And select a suitable shipping method.</p>
-          <div className="mt-8 space-y-3 rounded-lg border bg-white px-2 py-4 sm:px-6">
-            <div className="flex flex-col rounded-lg bg-white sm:flex-row">
-              <img className="m-2 h-24 w-28 rounded-md border object-cover object-center" src="https://images.unsplash.com/flagged/photo-1556637640-2c80d3201be8?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8M3x8c25lYWtlcnxlbnwwfHwwfHw%3D&auto=format&fit=crop&w=500&q=60" alt="" />
-              <div className="flex w-full flex-col px-4 py-4">
-                <span className="font-semibold">Nike Air Max Pro 8888 - Super Light</span>
-                <span className="float-right text-gray-400">42EU - 8.5US</span>
-                <p className="text-lg font-bold">$138.99</p>
-              </div>
-            </div>
-            <div className="flex flex-col rounded-lg bg-white sm:flex-row">
-              <img className="m-2 h-24 w-28 rounded-md border object-cover object-center" src="https://images.unsplash.com/photo-1600185365483-26d7a4cc7519?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8OHx8c25lYWtlcnxlbnwwfHwwfHw%3D&auto=format&fit=crop&w=500&q=60" alt="" />
-              <div className="flex w-full flex-col px-4 py-4">
-                <span className="font-semibold">Nike Air Max Pro 8888 - Super Light</span>
-                <span className="float-right text-gray-400">42EU - 8.5US</span>
-                <p className="mt-auto text-lg font-bold">$238.99</p>
-              </div>
-            </div>
+          <div className="mt-8 space-y-3 rounded-lg border bg-white px-2 py-4 sm:px-6 overflow-auto h-[280px]">
+            {cartItems?.map((item: CartItem, index) => (
+              <CheckOutCard key={index} cartItem={item} product={products[item.product_id]} />
+            ))}
           </div>
 
           <p className="mt-8 text-lg font-medium">Shipping Methods</p>
@@ -104,34 +148,55 @@ const Checkout: React.FC = () => {
           <div className="">
             <label htmlFor="email" className="mt-4 mb-2 block text-sm font-medium">Email</label>
             <div className="relative">
-              <input type="text" id="email" name="email" value={email} onChange={(e) => setEmail(e.target.value)} className="w-full rounded-md border border-gray-200 bg-white px-4 py-3 text-sm text-gray-500 shadow-sm outline-none focus:z-10 focus:border-blue-500 focus:ring-blue-500" placeholder="your.email@gmail.com" />
+              <input type="text" id="email" name="email" className="w-full rounded-md border border-gray-200 px-4 py-3 pl-11 text-sm shadow-sm focus:z-10 focus:border-blue-500 focus:ring-blue-500" placeholder="your.email@gmail.com" value={email} onChange={(e) => setEmail(e.target.value)} />
+              <div className="pointer-events-none absolute inset-y-0 left-0 inline-flex items-center px-3">
+                <svg aria-hidden="true" className="h-4 w-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 12v4H8v-4H4l8-8 8 8h-4z"></path>
+                </svg>
+              </div>
             </div>
             <label htmlFor="card-holder" className="mt-4 mb-2 block text-sm font-medium">Card Holder</label>
             <div className="relative">
-              <input type="text" id="card-holder" name="card-holder" value={cardHolder} onChange={(e) => setCardHolder(e.target.value)} className="w-full rounded-md border border-gray-200 bg-white px-4 py-3 text-sm text-gray-500 shadow-sm outline-none focus:z-10 focus:border-blue-500 focus:ring-blue-500" placeholder="Your full name here" />
+              <input type="text" id="card-holder" name="card-holder" className="w-full rounded-md border border-gray-200 px-4 py-3 pl-11 text-sm shadow-sm focus:z-10 focus:border-blue-500 focus:ring-blue-500" placeholder="Your full name here" value={cardHolder} onChange={(e) => setCardHolder(e.target.value)} />
+              <div className="pointer-events-none absolute inset-y-0 left-0 inline-flex items-center px-3">
+                <svg aria-hidden="true" className="h-4 w-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 12H9m12-6v12c0 1.657-1.343 3-3 3H6c-1.657 0-3-1.343-3-3V6c0-1.657 1.343-3 3-3h12c1.657 0 3 1.343 3 3z"></path>
+                </svg>
+              </div>
             </div>
             <label htmlFor="card-no" className="mt-4 mb-2 block text-sm font-medium">Card Details</label>
             <div className="flex">
               <div className="relative w-7/12 flex-shrink-0">
-                <input type="text" id="card-no" name="card-no" value={cardNo} onChange={(e) => setCardNo(e.target.value)} className="w-full rounded-md border border-gray-200 bg-white px-4 py-3 text-sm text-gray-500 shadow-sm outline-none focus:z-10 focus:border-blue-500 focus:ring-blue-500" placeholder="xxxx-xxxx-xxxx-xxxx" />
+                <input type="text" id="card-no" name="card-no" className="w-full rounded-md border border-gray-200 px-4 py-3 pl-11 text-sm shadow-sm focus:z-10 focus:border-blue-500 focus:ring-blue-500" placeholder="xxxx-xxxx-xxxx-xxxx" value={cardNo} onChange={(e) => setCardNo(e.target.value)} />
+                <div className="pointer-events-none absolute inset-y-0 left-0 inline-flex items-center px-3">
+                  <svg aria-hidden="true" className="h-4 w-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 11h16M4 15h16m-7-7h2m-4 0h2"></path>
+                  </svg>
+                </div>
               </div>
-              <input type="text" id="credit-expiry" name="credit-expiry" value={creditExpiry} onChange={(e) => setCreditExpiry(e.target.value)} className="w-full rounded-md border border-gray-200 bg-white px-4 py-3 text-sm text-gray-500 shadow-sm outline-none focus:z-10 focus:border-blue-500 focus:ring-blue-500" placeholder="MM/YY" />
-              <input type="text" id="credit-cvc" name="credit-cvc" value={creditCvc} onChange={(e) => setCreditCvc(e.target.value)} className="w-1/6 flex-shrink-0 rounded-md border border-gray-200 bg-white px-4 py-3 text-sm text-gray-500 shadow-sm outline-none focus:z-10 focus:border-blue-500 focus:ring-blue-500" placeholder="CVC" />
+              <input type="text" name="credit-expiry" className="w-full rounded-md border border-gray-200 px-4 py-3 text-sm shadow-sm focus:z-10 focus:border-blue-500 focus:ring-blue-500" placeholder="MM/YY" value={creditExpiry} onChange={(e) => setCreditExpiry(e.target.value)} />
+              <input type="text" name="credit-cvc" className="w-1/6 flex-shrink-0 rounded-md border border-gray-200 px-4 py-3 text-sm shadow-sm focus:z-10 focus:border-blue-500 focus:ring-blue-500" placeholder="CVC" value={creditCvc} onChange={(e) => setCreditCvc(e.target.value)} />
             </div>
             <label htmlFor="billing-address" className="mt-4 mb-2 block text-sm font-medium">Billing Address</label>
             <div className="flex flex-col sm:flex-row">
               <div className="relative flex-shrink-0 sm:w-7/12">
-                <input type="text" id="billing-address" name="billing-address" value={billingAddress} onChange={(e) => setBillingAddress(e.target.value)} className="w-full rounded-md border border-gray-200 bg-white px-4 py-3 text-sm text-gray-500 shadow-sm outline-none focus:z-10 focus:border-blue-500 focus:ring-blue-500" placeholder="Street Address" />
+                <input type="text" id="billing-address" name="billing-address" className="w-full rounded-md border border-gray-200 px-4 py-3 pl-11 text-sm shadow-sm focus:z-10 focus:border-blue-500 focus:ring-blue-500" placeholder="Street Address" value={billingAddress} onChange={(e) => setBillingAddress(e.target.value)} />
+                <div className="pointer-events-none absolute inset-y-0 left-0 inline-flex items-center px-3">
+                  <svg aria-hidden="true" className="h-4 w-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"></path>
+                  </svg>
+                </div>
               </div>
-              <select id="billing-state" name="billing-state" value={billingState} onChange={(e) => setBillingState(e.target.value)} className="w-full rounded-md border border-gray-200 bg-white px-4 py-3 text-sm text-gray-500 shadow-sm outline-none focus:z-10 focus:border-blue-500 focus:ring-blue-500">
+              <select id="billing-state" name="billing-state" className="w-full rounded-md border border-gray-200 px-4 py-3 text-sm shadow-sm focus:z-10 focus:border-blue-500 focus:ring-blue-500"  value={billingState} onChange={(e) => setBillingState(e.target.value)}>
                 <option value="State">State</option>
               </select>
-              <input type="text" id="billing-zip" name="billing-zip" value={billingZip} onChange={(e) => setBillingZip(e.target.value)} className="flex-shrink-0 rounded-md border border-gray-200 bg-white px-4 py-3 text-sm text-gray-500 shadow-sm outline-none focus:z-10 focus:border-blue-500 focus:ring-blue-500" placeholder="ZIP" />
+              <input type="text" id="billing-zip" name="billing-zip" className="flex-shrink-0 rounded-md border border-gray-200 px-4 py-3 text-sm shadow-sm focus:z-10 focus:border-blue-500 focus:ring-blue-500" placeholder="ZIP" value={billingZip} onChange={(e) => setBillingZip(e.target.value)} />
             </div>
+
             <div className="mt-6 border-t border-b py-2">
               <div className="flex items-center justify-between">
                 <p className="text-sm font-medium text-gray-900">Subtotal</p>
-                <p className="font-semibold text-gray-900">$399.00</p>
+                <p className="font-semibold text-gray-900">${calculateTotalPrice()}</p>
               </div>
               <div className="flex items-center justify-between">
                 <p className="text-sm font-medium text-gray-900">Shipping</p>
@@ -140,7 +205,7 @@ const Checkout: React.FC = () => {
             </div>
             <div className="mt-6 flex items-center justify-between">
               <p className="text-sm font-medium text-gray-900">Total</p>
-              <p className="text-2xl font-semibold text-gray-900">$408.00</p>
+              <p className="text-2xl font-semibold text-gray-900">${calculateTotalPrice() + 8}</p>
             </div>
           </div>
           <button className="mt-4 mb-8 w-full rounded-md bg-gray-900 px-6 py-3 font-medium text-white" onClick={handlePlaceOrder}>Place Order</button>
